@@ -42,14 +42,17 @@ except OSError:
 if not os.path.exists(db_file):
   sys.exit("DB file missing. What happened?")
 
+# [ToDo] I think this should be a function to clean the word list
 words = (word_tokenize(L))
 words = [word.lower() for word in words if not word in stop_words]
 words = [word for word in words if word.isalpha()]
 words = [word for word in words if len(word) > 3 & len(word) < 9]
 
+# [ToDo] This should be turned into a function
 random.shuffle(words)
 print("Returning five random words:")
 for count in range(5):
   print('\033[1;34;40m %s' % words[count], end = ' ')
 
+# This adds and extra empty line and resets the text color to white
 print('\033[1;37;40m \n')
