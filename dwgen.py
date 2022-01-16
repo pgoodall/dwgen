@@ -6,6 +6,7 @@
 import sys, random
 import os
 import sqlite3
+import nltkmodules
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 
