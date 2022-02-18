@@ -6,54 +6,66 @@
 import sys, random
 import os
 import sqlite3
+import colorama
+from colorama import Fore
+from colorama import Style
 import nltkmodules
 from nltk.corpus import stopwords
-from nltk.tokenize import word_tokenize
+from nltk.tokenize.nist import NISTTokenizer
 
-# print("Read in the file from the command line...")
-L = sys.stdin.read()
-stop_words = set(stopwords.words('english'))
 home = os.path.expanduser("~")
-localdir = home + "/.dwgen"
+DWGEN_DIR = home + "/.dwgen"
 
-def createLocalStorage():
+def create_local_storage():
   try:
-    os.mkdir(localdir)
+    os.mkdir(DWGEN_DIR)
   except OSError:
-    print("Failed to create local directory %s " % localdir)
+    print("Failed to create local directory %s " % DWGEN_DIR)
   else:
-    print("Created local storage at %s" % localdir)
+    print("Created local storage at %s" % DWGEN_DIR)
 
 # Check if the localdir already exists
-# print("Checking if the local storage directory exists at %s ..." % localdir)
-if not os.path.exists(localdir):
-  print("Local directory doesn't exist. Creating %s ..." % localdir)
-  createLocalStorage()
-# else:
-#   print("Local directory %s already exists ..." % localdir)
+def setup_local_environment():
+  print("Checking if the local storage directory exists at %s ..." % DWGEN_DIR)
+  if not os.path.exists(DWGEN_DIR):
+    print("Local directory doesn't exist. Creating %s ..." % DWGEN_DIR)
+    create_local_storage()
 
-# Connect to local storage
-# print("Checking for local db ...")
-db_file = localdir + '/db.sqlite3'
-try:
-  db = sqlite3.connect(db_file)
-except OSError:
-  sys.exit("Failed to create local DB for storage.")
+# Connect to local db
+def setup_storage_db():
+  print("Checking for local db ...")
+  db_file = DWGEN_DIR + '/db.sqlite3'
+  try:
+    db = sqlite3.connect(db_file)
+  except OSError:
+    sys.exit("Failed to create local DB for storage.")
 
-if not os.path.exists(db_file):
-  sys.exit("DB file missing. What happened?")
+  if not os.path.exists(db_file):
+    sys.exit("DB file missing. What happened?")
 
-# [ToDo] I think this should be a function to clean the word list
-words = (word_tokenize(L))
-words = [word.lower() for word in words if not word in stop_words]
-words = [word for word in words if word.isalpha()]
-words = [word for word in words if len(word) > 3 & len(word) < 9]
+def build_word_list():
+  nist = NISTTokenizer()
+  L = sys.stdin.read()
+  stop_words = set(stopwords.words('english'))
+  words = (nist.tokenize(L, lowercase=True))
+  words = [word for word in words if not word in stop_words]
+  words = [word for word in words if word.isalpha()]
+  words = [word for word in words if len(word) > 3 & len(word) < 9]
+  return words
 
+def print_password():
+  print("Returning five random words:")
+  for count in range(5):
+    print(Fore.BLUE + Style.BRIGHT + wordlist[count] + Style.RESET_ALL, end=' ')
+  
+  print('\n')
+
+
+setup_local_environment()
 # [ToDo] This should be turned into a function
-random.shuffle(words)
-print("Returning five random words:")
-for count in range(5):
-  print('\033[1;34;40m %s' % words[count], end = ' ')
+wordlist = build_word_list()
+random.shuffle(wordlist)
+print_password()
 
 # This adds and extra empty line and resets the text color to white
-print('\033[1;37;40m \n')
+# print('\033[1;37;40m \n')
