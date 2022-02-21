@@ -6,6 +6,8 @@
 import sys, random
 import os
 import sqlite3
+import csv
+import requests
 import colorama
 from colorama import Fore
 from colorama import Style
@@ -15,6 +17,7 @@ from nltk.tokenize.nist import NISTTokenizer
 
 home = os.path.expanduser("~")
 DWGEN_DIR = home + "/.dwgen"
+gutenberg_db_file = DWGEN_DIR + "/gutenberg.db"
 
 def create_local_storage():
   try:
@@ -30,6 +33,9 @@ def setup_local_environment():
   if not os.path.exists(DWGEN_DIR):
     print("Local directory doesn't exist. Creating %s ..." % DWGEN_DIR)
     create_local_storage()
+  
+  if not os.path.exists(gutenberg_db_file):
+    create_gutenberg_db()
 
 # Connect to local db
 def setup_storage_db():
@@ -60,6 +66,33 @@ def print_password():
   
   print('\n')
 
+def update_guttenberg_db():
+  catalog_url = "https://www.gutenberg.org/cache/epub/feeds/pg_catalog.csv"
+  with requests.Session() as s:
+    catalog = s.get(catalog_url)
+    
+def create_gutenberg_db():
+  create_table = '''CREATE TABLE gutenberg(
+                    id INTEGER PRIMARY KEY,
+                    format TEXT,
+                    pub_date TEXT,
+                    title TEXT,
+                    lang TEXT,
+                    author TEXT,
+                    dates TEXT,
+                    col_x TEXT,
+                    col_y TEXT,
+                    col_z TEXT
+  );'''
+  
+  try:
+    connection = sqlite3.connect(gutenberg_db_file)
+  except OSError:
+    sys.exit("Failed to create gutenberg DB.")
+
+  cursor = connection.cursor()
+  cursor.execute(create_table)
+  
 
 setup_local_environment()
 # [ToDo] This should be turned into a function
