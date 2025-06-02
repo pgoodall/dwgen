@@ -1,0 +1,6 @@
+{"image":"mcr.microsoft.com/devcontainers/rust:latest",
+ "features": {
+  "ghcr.io/nils-geistmann/devcontainers-features/zsh:0.0.6": {}
+    }
+}
+
