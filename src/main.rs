@@ -1,12 +1,13 @@
-use std::env;
+fn read_cli_args() -> Vec<String> {
+    use std::env;
+    let args: Vec<String> = env::args().collect();
+    return args
+}
+
 
 fn main() {
-    // Example text
-    let sample_text = "The quick brown fox jumps over the lazy dog. \
-                       This is a simple sentence to demonstrate the algorithm. \
-                       Extraordinary complications arise from miscellaneous circumstances. \
-                       The complexity of this text should be relatively moderate.";
-
-    let cwd = env::current_dir();
-    println!("{cwd:#?}");
+    let args: Vec<String> = read_cli_args();
+    for arg in &args {
+        println!("{arg}");
+    }
 }
