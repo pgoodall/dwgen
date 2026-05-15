@@ -1,3 +1,5 @@
+use std::io::Error;
+
 use clap::Parser;
 
 #[derive(Parser, Debug)]
@@ -12,12 +14,25 @@ pub struct Args {
     pub number: Option<u32>,
 }
 
-pub fn process_file(f: &String) -> String {
+pub fn process_file(f: &String) -> Result<String, Error> {
     use std::fs::File;
     use std::io::prelude::*;
 
-    let contents = match File::open(f) {
-        Ok(f) => f,
-        Err(e) => return Err(e),
-    }
+    let mut file = File::open(f)?;
+    let mut contents = String::new();
+    file.read_to_string(&mut contents)?;
+    Ok(contents)
+}
+
+pub fn clean_word_list(words: Vec<String>) -> Vec<String> {
+    words
+        .into_iter()
+        .filter(|w| w.len() > 3)
+        .map(|w| {
+            w.replace(
+                &['(', ')', ',', '\"', '.', ';', ':', '\'', '!', '-'][..],
+                "",
+            )
+        })
+        .collect()
 }
