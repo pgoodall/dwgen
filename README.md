@@ -1,4 +1,5 @@
-[![Rust](https://github.com/pgoodall/dwgen/actions/workflows/rust.yml/badge.svg)](https://github.com/pgoodall/dwgen/actions/workflows/rust.yml)
+[![Rust](https://github.com/pgoodall/dwgen/actions/workflows/rust.yml/badge.svg)](https://github.com/pgoodall/dwgen/actions/workflows/rust.yml) [![CodeQL](https://github.com/pgoodall/dwgen/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/pgoodall/dwgen/actions/workflows/github-code-scanning/codeql) ![GitHub License](https://img.shields.io/github/license/pgoodall/dwgen?link=https%3A%2F%2Fgithub.com%2Fpgoodall%2Fdwgen%2Fblob%2FLICENSE)
+
 
 ## dwgen
 This is a (very) simple utility for creating a [Diceware](https://en.wikipedia.org/wiki/Diceware)-like password by choosing a set (5 by default) of random words from a large body of text. 
