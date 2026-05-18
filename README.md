@@ -1,4 +1,4 @@
-[![Rust](https://github.com/pgoodall/dwgen/actions/workflows/rust.yml/badge.svg)](https://github.com/pgoodall/dwgen/actions/workflows/rust.yml) [![CodeQL](https://github.com/pgoodall/dwgen/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/pgoodall/dwgen/actions/workflows/github-code-scanning/codeql) ![GitHub License](https://img.shields.io/github/license/pgoodall/dwgen?link=https%3A%2F%2Fgithub.com%2Fpgoodall%2Fdwgen%2Fblob%2FLICENSE)
+![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/pgoodall/dwgen/.github%2Fworkflows%2Frust.yml?logo=github) [![CodeQL](https://github.com/pgoodall/dwgen/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/pgoodall/dwgen/actions/workflows/github-code-scanning/codeql) ![GitHub License](https://img.shields.io/github/license/pgoodall/dwgen?link=https%3A%2F%2Fgithub.com%2Fpgoodall%2Fdwgen%2Fblob%2FLICENSE)
 
 
 ## dwgen
