@@ -7,14 +7,45 @@ use clap::Parser;
 pub struct Args {
     /// Name of local file
     #[arg(short, long)]
-    pub file: String,
+    file: String,
 
     /// Number of words
     #[arg(short, long)]
-    pub number: Option<u32>,
+    number: Option<u32>,
 }
 
-pub fn process_file(f: &String) -> Result<String, Error> {
+pub fn generate_password(args: Args) -> Vec<String> {
+    use rand::rngs;
+    use rand::seq::{IteratorRandom, SliceRandom};
+
+    // Ingest contens of the file and save the words in a Vec
+    let mut words: Vec<String> = Vec::new();
+    if let Ok(contents) = process_file(&args.file) {
+        contents
+            .split_whitespace()
+            .for_each(|s| words.push(s.to_string()));
+    };
+
+    // Clean-up the word list
+    let mut word_list: Vec<String> = clean_word_list(words);
+
+    // Shuffle the words in the words list
+    let mut rng = rngs::ThreadRng::default();
+    word_list.shuffle(&mut rng);
+
+    // Choose the specified number of random words from the list 
+    // and print them out
+    let mut password: Vec<String> = Vec::new();
+    for _ in 0..=args.number.unwrap_or(5) {
+        if let Some(word) = word_list.iter().choose(&mut rng) {
+            password.push(word.to_string().to_lowercase());
+        }
+    };
+
+    password
+}
+
+fn process_file(f: &String) -> Result<String, Error> {
     use std::fs::File;
     use std::io::prelude::*;
 
@@ -24,7 +55,7 @@ pub fn process_file(f: &String) -> Result<String, Error> {
     Ok(contents)
 }
 
-pub fn clean_word_list(words: Vec<String>) -> Vec<String> {
+fn clean_word_list(words: Vec<String>) -> Vec<String> {
     words
         .into_iter()
         .filter(|w| w.len() > 3)
