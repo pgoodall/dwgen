@@ -1,5 +1,7 @@
 [![Rust](https://github.com/pgoodall/dwgen/actions/workflows/rust.yml/badge.svg)](https://github.com/pgoodall/dwgen/actions/workflows/rust.yml)
 
+[![CodeQL](https://github.com/pgoodall/dwgen/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/pgoodall/dwgen/actions/workflows/github-code-scanning/codeql)
+
 ## dwgen
 This is a (very) simple utility for creating a [Diceware](https://en.wikipedia.org/wiki/Diceware)-like password by choosing a set (5 by default) of random words from a large body of text. 
 
