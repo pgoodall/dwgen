@@ -6,4 +6,16 @@ This is a (very) simple utility for creating a [Diceware](https://en.wikipedia.o
 
 This is the first release, so it is not yet very sophisticated, but I will continually improve it. I originally wrote this as a Python script about 10 years ago. The original version took me about two weeks to create, but this Rust-based version took about half a day. It is also _much_ faster. 
 
-I'll add more to this README as the project progresses... 👋
+The latest version is `v0.1.1`.
+
+```shell
+$ dwgen --help
+Usage: dwgen [OPTIONS] --file <FILE>
+
+Options:
+  -f, --file <FILE>      Name of local file
+  -n, --number <NUMBER>  Number of words
+  -h, --help             Print help
+  -V, --version          Print version
+```
+
