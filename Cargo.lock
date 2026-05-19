@@ -148,6 +148,8 @@ dependencies = [
 [[package]]
 name = "dwgen-lib"
 version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "411d5a1f767f0e213c1c7040e95246b02769d6664886337a898949c79bd78980"
 dependencies = [
  "clap",
  "rand",

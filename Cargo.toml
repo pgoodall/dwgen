@@ -4,6 +4,6 @@ version = "0.1.1"
 edition = "2024"
 
 [dependencies]
-dwgen-lib = { path = "../dwgen-lib/" }
 clap = { version = "4.6.1", features = ["derive"] }
+dwgen-lib = "0.1.0"
 rand = "0.10.1"
