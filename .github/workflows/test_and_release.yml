@@ -1,0 +1,168 @@
+name: Tests and release
+
+on:
+  push:
+    branches:
+      - "main"
+    tags:
+      - "v*"
+  pull_request:
+    branches:
+      - "main"
+
+
+env:
+  CRATE_NAME: dwgen
+  GITHUB_TOKEN: ${{ github.token }}
+  RUST_BACKTRACE: 1
+
+jobs:
+  test:
+    name: ${{ matrix.platform.os-name }} with rust ${{ matrix.toolchain }}
+    runs-on: ${{ matrix.platform.runs-on }}
+    strategy:
+      fail-fast: false
+      matrix:
+        platform:
+          # Platforms that don't work:
+          #
+          # - sparc64-unknown-linux-gnu - cannot compile openssl-sys
+          # - x86_64-unknown-illumos - weird error compiling openssl - "bin/sh: 1: granlib: not found"
+
+        #   - os-name: FreeBSD-x86_64
+        #     runs-on: ubuntu-26.04
+        #     target: x86_64-unknown-freebsd
+        #     bin: dwgen
+        #     name: dwgen-FreeBSD-x86_64.tar.gz
+        #     skip-tests: true
+          - os-name: Linux-x86_64
+            runs-on: ubuntu-26.04
+            target: x86_64-unknown-linux-musl
+            bin: dwgen
+            name: dwgen-Linux-x86_64-musl.tar.gz
+          - os-name: Linux-aarch64
+            runs-on: ubuntu-26-04
+            target: aarch64-unknown-linux-musl
+            bin: dwgen
+            name: dwgen-Linux-aarch64-musl.tar.gz
+          - os-name: Linux-arm
+            runs-on: ubuntu-26-04
+            target: arm-unknown-linux-musleabi
+            bin: dwgen
+            name: dwgen-Linux-arm-musl.tar.gz
+          - os-name: Linux-i686
+            runs-on: ubuntu-26-04
+            target: i686-unknown-linux-musl
+            bin: dwgen
+            name: dwgen-Linux-i686-musl.tar.gz
+            skip-tests: true
+          - os-name: Linux-powerpc
+            runs-on: ubuntu-26-04
+            target: powerpc-unknown-linux-gnu
+            bin: dwgen
+            name: dwgen-Linux-powerpc-gnu.tar.gz
+            skip-tests: true
+          - os-name: Linux-powerpc64
+            runs-on: ubuntu-26-04
+            target: powerpc64-unknown-linux-gnu
+            bin: dwgen
+            name: dwgen-Linux-powerpc64-gnu.tar.gz
+            skip-tests: true
+          - os-name: Linux-powerpc64le
+            runs-on: ubuntu-26-04
+            target: powerpc64le-unknown-linux-gnu
+            bin: dwgen
+            name: dwgen-Linux-powerpc64le.tar.gz
+            skip-tests: true
+          - os-name: Linux-riscv64
+            runs-on: ubuntu-26-04
+            target: riscv64gc-unknown-linux-gnu
+            bin: dwgen
+            name: dwgen-Linux-riscv64gc-gnu.tar.gz
+          - os-name: Linux-s390x
+            runs-on: ubuntu-26-04
+            target: s390x-unknown-linux-gnu
+            bin: dwgen
+            name: dwgen-Linux-s390x-gnu.tar.gz
+            skip-tests: true
+          - os-name: NetBSD-x86_64
+            runs-on: ubuntu-26-04
+            target: x86_64-unknown-netbsd
+            bin: dwgen
+            name: dwgen-NetBSD-x86_64.tar.gz
+            skip-tests: true
+          - os-name: Windows-aarch64
+            runs-on: windows-latest
+            target: aarch64-pc-windows-msvc
+            bin: dwgen.exe
+            name: dwgen-Windows-aarch64.zip
+            skip-tests: true
+          - os-name: Windows-i686
+            runs-on: windows-latest
+            target: i686-pc-windows-msvc
+            bin: dwgen.exe
+            name: dwgen-Windows-i686.zip
+            skip-tests: true
+          - os-name: Windows-x86_64
+            runs-on: windows-latest
+            target: x86_64-pc-windows-msvc
+            bin: dwgen.exe
+            name: dwgen-Windows-x86_64.zip
+          - os-name: macOS-x86_64
+            runs-on: macOS-latest
+            target: x86_64-apple-darwin
+            bin: dwgen
+            name: dwgen-Darwin-x86_64.tar.gz
+          - os-name: macOS-aarch64
+            runs-on: macOS-latest
+            target: aarch64-apple-darwin
+            bin: dwgen
+            name: dwgen-Darwin-aarch64.tar.gz
+        toolchain:
+          - stable
+        include:
+          - platform:
+              os-name: Linux-x86_64
+              runs-on: ubuntu-26-04
+              target: x86_64-unknown-linux-musl
+              bin: dwgen
+            toolchain: beta
+          - platform:
+              os-name: Linux-x86_64
+              runs-on: ubuntu-26-04
+              target: x86_64-unknown-linux-musl
+              bin: dwgen
+            toolchain: nightly
+    steps:
+      - uses: actions/checkout@v6
+      - name: Run tests
+        uses: houseabsolute/actions-rust-cross@v1
+        with:
+          command: "test"
+          target: ${{ matrix.platform.target }}
+          toolchain: ${{ matrix.toolchain }}
+          args: "--locked --release"
+          # This works around the issue in https://github.com/cross-rs/cross/issues/1450. The `main`
+          # branch updated its images long ago, but the last cross release, 0.2.5, is still using
+          # Ubuntu 16.04 as the base for some images.
+          #
+          # This also contains a fix for https://github.com/cross-rs/cross/issues/1619. Previously,
+          # we used an earlier commit, but this started erroring because some dependencies included
+          # cross config.
+          cross-version: 107433fa9d71d7eb506cd5bf5467bab89edb7a52
+        if: ${{ !matrix.platform.skip-tests }}
+      - name: Build binary
+        uses: houseabsolute/actions-rust-cross@v1
+        with:
+          command: "build"
+          target: ${{ matrix.platform.target }}
+          toolchain: ${{ matrix.toolchain }}
+          args: "--locked --release"
+          strip: true
+          cross-version: 107433fa9d71d7eb506cd5bf5467bab89edb7a52
+      - name: Publish artifacts and release
+        uses: houseabsolute/actions-rust-release@v0
+        with:
+          executable-name: dwgen
+          target: ${{ matrix.platform.target }}
+        if: matrix.toolchain == 'stable'
