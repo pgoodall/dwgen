@@ -1,11 +1,5 @@
 use clap::Parser;
 
-/// All options passed are gathered in the Args struct
-/// # Example
-/// ```
-/// use clap::Parser;
-/// let args = Args::parse;
-/// ```
 #[derive(Parser, Debug)]
 #[command(version, about, long_about = None)]
 pub struct Cli {
