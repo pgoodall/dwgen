@@ -10,4 +10,8 @@ pub struct Cli {
     /// Number of words
     #[arg(short, long)]
     pub num: Option<u8>,
+
+    /// Enable interactive mode
+    #[arg(short, long)]
+    pub interactive: bool
 }

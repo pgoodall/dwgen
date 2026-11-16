@@ -20,4 +20,5 @@ fn main() {
     let password = generate_password(config);
 
     println!("{}", password.join(" "));
+    println!("interactive: {:?}", args.interactive);
 }
