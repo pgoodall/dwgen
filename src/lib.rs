@@ -1,3 +1,5 @@
+pub mod interactive;
+
 use clap::Parser;
 
 #[derive(Parser, Debug)]
@@ -5,7 +7,7 @@ use clap::Parser;
 pub struct Cli {
     /// Name of local file
     #[arg(short, long)]
-    pub file: String,
+    pub file: Option<String>,
 
     /// Number of words
     #[arg(short, long)]
